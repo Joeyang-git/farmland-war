@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cr4fwj8ckf1m8" path="res://assets/tile/TilesetField.png" id="1_wmy51"]
 [ext_resource type="Script" uid="uid://m5drrjukdpud" path="res://scene/game/map.gd" id="2_pldw2"]
 [ext_resource type="PackedScene" uid="uid://dlfn7ivwk87w8" path="res://scene/building/home.tscn" id="3_pldw2"]
+[ext_resource type="PackedScene" uid="uid://cob20waqrf7sb" path="res://scene/building/chicken.tscn" id="4_82mss"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c7s6e"]
 texture = ExtResource("1_wmy51")
@@ -88,5 +89,9 @@ script = ExtResource("2_pldw2")
 
 [node name="BuildingContainer" type="Node2D" parent="." unique_id=225347211]
 
-[node name="Home" parent="BuildingContainer" unique_id=970460913 instance=ExtResource("3_pldw2")]
+[node name="home" parent="BuildingContainer" unique_id=970460913 instance=ExtResource("3_pldw2")]
 position = Vector2(32, 32)
+
+[node name="chicken" parent="BuildingContainer" unique_id=1303683133 instance=ExtResource("4_82mss")]
+position = Vector2(64, 32)
+owner_uid = 1

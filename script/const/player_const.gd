@@ -9,3 +9,7 @@ enum USER_TYPE {
 }
 
 const LOCAL_PEER_ID: int = 0 ## 单机模式下固定值，本机玩家的 peer_id
+
+## TileSet Atlas 中标识初始领地归属的 tile 坐标（与 custom_data "user" 整型对应）
+const TILE_HUMAN: Vector2i = Vector2i(1, 4)   ## user = HUMAN(1)
+const TILE_AI: Vector2i = Vector2i(1, 10)  ## user = AI(2)

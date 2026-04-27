@@ -12,12 +12,12 @@ extends Node2D
 ## 最大耐久（血量）
 @export var max_hp: int = 2
 ## 技能类型
-@export var skill_type: building_const.SKILL_TYPE = building_const.SKILL_TYPE.ACTIVE
+@export var skill_type: building_const.SKILL_TYPE = building_const.SKILL_TYPE.PASSIVE
 ## 技能冷却时间（秒）；被动类等价为产钱/触发周期
 @export var skill_cd: float = 5.0
 
 ## 所属玩家 uid（由 Map 在建造时赋值）
-var owner_uid: int = 0
+@export var owner_uid: int = 0
 ## 建筑左上角所在格坐标
 var origin_cell: Vector2i = Vector2i.ZERO
 ## 当前耐久
@@ -44,6 +44,7 @@ signal skill_triggered(b: building)
 # ---------------------------------------------------------------------------
 func _ready() -> void:
 	hp = max_hp
+	add_to_group("building")
 	fix_to_grid()
 	_fit_sprite()
 
@@ -102,6 +103,16 @@ func fix_to_grid() -> void:
 	origin_cell = Vector2i(int(aligned.x / ts), int(aligned.y / ts))
 
 	print("fix_to_grid: position=%s origin_cell=%s" % [position, origin_cell])
+
+
+## 返回建筑占用的所有格坐标（以 origin_cell 为左上角，按 size 展开）。
+func get_occupied_cells() -> Array[Vector2i]:
+	var result: Array[Vector2i] = []
+	var s: int = size as int
+	for dy in range(s):
+		for dx in range(s):
+			result.append(origin_cell + Vector2i(dx, dy))
+	return result
 
 
 ## 让子节格点 Sprite2D 的缩放与尺寸对齐瓦片。

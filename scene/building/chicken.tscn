@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://cob20waqrf7sb"]
+
+[ext_resource type="PackedScene" uid="uid://bn4ynvkak6ovj" path="res://scene/building/building.tscn" id="1_wupav"]
+[ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="2_j7m32"]
+[ext_resource type="Script" uid="uid://bbo28qsluf0ls" path="res://scene/building/chicken.gd" id="2_yidxt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yidxt"]
+atlas = ExtResource("2_j7m32")
+region = Rect2(464, 272, 16, 16)
+
+[node name="chicken" unique_id=970460913 instance=ExtResource("1_wupav")]
+script = ExtResource("2_yidxt")
+building_name = "chicken"
+skill_type = 1
+
+[node name="Sprite2D" parent="." index="0" unique_id=583592963]
+texture = SubResource("AtlasTexture_yidxt")
