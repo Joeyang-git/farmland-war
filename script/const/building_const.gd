@@ -13,6 +13,6 @@ enum SIZE {
 
 ## 技能类型
 enum SKILL_TYPE {
-	ACTIVE,   ## 主动：CD 就绪后自动选点释放
+	ACTIVE,   ## 主动：CD 就绪后需要用户点击释放
 	PASSIVE,  ## 被动：按周期/触发条件自动生效
 }

@@ -66,6 +66,25 @@ func get_tile_hp(cell: Vector2i) -> int:
 	return 1
 
 
+## 返回 attacker_uid 所有地块边界上可攻击的邻接格（去重）。
+func get_border_targets(attacker_uid: int) -> Array[Vector2i]:
+	if not players.has(attacker_uid):
+		return []
+	var owned: Array[Vector2i] = players[attacker_uid].cells
+	var seen: Dictionary = {}
+	var result: Array[Vector2i] = []
+	var dirs := [Vector2i(0, -1), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(1, 0)]
+	for cell in owned:
+		for d in dirs:
+			var nb: Vector2i = cell + d
+			if seen.has(nb):
+				continue
+			seen[nb] = true
+			if is_attackable(nb, attacker_uid):
+				result.append(nb)
+	return result
+
+
 ## 该格是否可被 attacker_uid 攻击（存在于地图中、且不属于己方）。
 func is_attackable(cell: Vector2i, attacker_uid: int) -> bool:
 	var td: TileData = get_cell_tile_data(cell)

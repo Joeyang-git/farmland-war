@@ -22,6 +22,8 @@ extends Node2D
 var origin_cell: Vector2i = Vector2i.ZERO
 ## 当前耐久
 var hp: int = max_hp
+## 地图引用，_ready 后自动从 "map_layer" 组获取
+var map: TileMapLayer = null
 
 # ---------------------------------------------------------------------------
 # 运行时状态（不暴露给编辑器）
@@ -47,6 +49,11 @@ func _ready() -> void:
 	add_to_group("building")
 	fix_to_grid()
 	_fit_sprite()
+	call_deferred("_bind_map")
+
+
+func _bind_map() -> void:
+	map = get_tree().get_first_node_in_group("map_layer") as TileMapLayer
 
 
 func _process(delta: float) -> void:

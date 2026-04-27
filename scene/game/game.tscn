@@ -91,7 +91,32 @@ script = ExtResource("2_pldw2")
 
 [node name="home" parent="BuildingContainer" unique_id=970460913 instance=ExtResource("3_pldw2")]
 position = Vector2(32, 32)
+owner_uid = 1
 
 [node name="chicken" parent="BuildingContainer" unique_id=1303683133 instance=ExtResource("4_82mss")]
 position = Vector2(64, 32)
 owner_uid = 1
+
+[node name="chicken2" parent="BuildingContainer" unique_id=1154406051 instance=ExtResource("4_82mss")]
+position = Vector2(64, 64)
+owner_uid = 1
+
+[node name="chicken3" parent="BuildingContainer" unique_id=76898417 instance=ExtResource("4_82mss")]
+position = Vector2(32, 64)
+owner_uid = 1
+
+[node name="home2" parent="BuildingContainer" unique_id=1775593468 instance=ExtResource("3_pldw2")]
+position = Vector2(176, 192)
+owner_uid = 1
+
+[node name="chicken4" parent="BuildingContainer" unique_id=1819992847 instance=ExtResource("4_82mss")]
+position = Vector2(160, 208)
+owner_uid = 2
+
+[node name="chicken5" parent="BuildingContainer" unique_id=1015252771 instance=ExtResource("4_82mss")]
+position = Vector2(192, 176)
+owner_uid = 2
+
+[node name="chicken6" parent="BuildingContainer" unique_id=80149218 instance=ExtResource("4_82mss")]
+position = Vector2(160, 176)
+owner_uid = 2
