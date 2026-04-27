@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bn4ynvkak6ovj"]
 
-[ext_resource type="Script" uid="uid://fi5c57ohkl82" path="res://scene/map/script/building/building.gd" id="1_7xnh5"]
+[ext_resource type="Script" uid="uid://fi5c57ohkl82" path="res://scene/building/building.gd" id="1_7xnh5"]
 [ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="1_jdgbk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c0b2r"]

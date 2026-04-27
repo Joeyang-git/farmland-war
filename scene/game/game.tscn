@@ -1,7 +1,7 @@
 [gd_scene format=4 uid="uid://bnjdoy8wh12pc"]
 
 [ext_resource type="Texture2D" uid="uid://cr4fwj8ckf1m8" path="res://assets/tile/TilesetField.png" id="1_wmy51"]
-[ext_resource type="Script" uid="uid://m5drrjukdpud" path="res://scene/map/script/map.gd" id="2_pldw2"]
+[ext_resource type="Script" uid="uid://m5drrjukdpud" path="res://scene/game/map.gd" id="2_pldw2"]
 [ext_resource type="PackedScene" uid="uid://dlfn7ivwk87w8" path="res://scene/building/home.tscn" id="3_pldw2"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c7s6e"]
