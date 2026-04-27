@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://bn4ynvkak6ovj"]
+
+[ext_resource type="Script" uid="uid://fi5c57ohkl82" path="res://scene/map/script/building/building.gd" id="1_7xnh5"]
+[ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="1_jdgbk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c0b2r"]
+atlas = ExtResource("1_jdgbk")
+region = Rect2(416, 0, 48, 48)
+filter_clip = true
+
+[node name="Building" type="Node2D" unique_id=970460913]
+script = ExtResource("1_7xnh5")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=583592963]
+scale = Vector2(0.666, 0.666)
+texture = SubResource("AtlasTexture_c0b2r")
+centered = false

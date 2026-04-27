@@ -15,6 +15,11 @@ run/main_scene="uid://bnjdoy8wh12pc"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=256
+window/size/viewport_height=256
+
 [dotnet]
 
 project/assembly_name="farmland-war"
