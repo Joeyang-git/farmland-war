@@ -15,6 +15,8 @@ extends Node2D
 @export var skill_type: building_const.SKILL_TYPE = building_const.SKILL_TYPE.PASSIVE
 ## 技能冷却时间（秒）；被动类等价为产钱/触发周期
 @export var skill_cd: float = 5.0
+## 一次性建造费用（金币）；子类在 _ready 中按尺寸赋值（PRD 3.3.1）
+@export var cost: int = 0
 
 ## 所属玩家 uid（由 Map 在建造时赋值）
 @export var owner_uid: int = 0

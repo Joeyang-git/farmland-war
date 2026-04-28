@@ -1,6 +1,12 @@
+## 地图层：负责地块归属、建筑占格校验与玩家节点生命周期。
+##
+## [player] 归属说明：
+##   - 所有 player 实例在 [method _collect_players] 中由本节点 add_child() 持有，
+##     即 player 节点是 Map（TileMapLayer）的直接子节点。
+##   - 外部（game.gd / building.gd）通过 map.players[uid] 访问具体玩家数据。
 extends TileMapLayer
 
-## uid(int) -> player
+## uid(int) -> player；player 节点由本节点持有（见 _collect_players）
 var players: Dictionary[int, player] = {}
 
 ## 格子当前血量表；未记录的格子视为满血（空地默认 1）
@@ -42,6 +48,7 @@ func _collect_players() -> void:
 			var p := player.new()
 			p.uid = uid
 			p.user_type = player_const.USER_TYPE.HUMAN if uid == 1 else player_const.USER_TYPE.AI
+			p.gold = player_const.INITIAL_GOLD
 			add_child(p)
 			players[uid] = p
 

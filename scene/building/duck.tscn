@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cbswxx5uex6sx"]
+
+[ext_resource type="PackedScene" uid="uid://bn4ynvkak6ovj" path="res://scene/building/building.tscn" id="1_wupav"]
+[ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="2_j7m32"]
+[ext_resource type="Script" uid="uid://qe0bar1wjvw7" path="res://scene/building/duck.gd" id="3_duckgd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_duck"]
+atlas = ExtResource("2_j7m32")
+region = Rect2(480, 272, 16, 16)
+
+[node name="duck" unique_id=970460913 instance=ExtResource("1_wupav")]
+script = ExtResource("3_duckgd")
+building_name = "duck"
+
+[node name="Sprite2D" parent="." index="0" unique_id=583592963]
+texture = SubResource("AtlasTexture_duck")

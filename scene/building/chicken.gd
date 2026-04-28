@@ -6,7 +6,8 @@ func _ready() -> void:
 	building_name = "鸡"
 	size = building_const.SIZE.SMALL
 	max_hp = 2
-	skill_cd = 3.0
+	cost = building_const.COST_SMALL
+	skill_cd = 5.0
 	super()
 
 

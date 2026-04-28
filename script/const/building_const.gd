@@ -16,3 +16,8 @@ enum SKILL_TYPE {
 	ACTIVE,   ## 主动：CD 就绪后需要用户点击释放
 	PASSIVE,  ## 被动：按周期/触发条件自动生效
 }
+
+## 各尺寸建筑一次性建造费用（PRD 3.3.1）
+const COST_SMALL:  int = 20   ## 低级 1×1
+const COST_MEDIUM: int = 60   ## 中级 2×2
+const COST_LARGE:  int = 150  ## 高级 3×3
