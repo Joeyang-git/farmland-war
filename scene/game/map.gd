@@ -5,6 +5,8 @@ var players: Dictionary[int, player] = {}
 
 ## 格子当前血量表；未记录的格子视为满血（空地默认 1）
 var tile_hp: Dictionary[Vector2i, int] = {}
+## 格子 → 占用它的建筑；用于放置合法性校验
+var occupied_cells: Dictionary[Vector2i, building] = {}
 
 
 func _enter_tree() -> void:
@@ -57,6 +59,8 @@ func _collect_buildings() -> void:
 		b.map = self
 		for cell in b.get_occupied_cells():
 			tile_hp[cell] = b.max_hp
+			occupied_cells[cell] = b
+		b.destroyed.connect(_on_building_destroyed)
 
 
 ## 返回格子当前血量；未受击过的格子返回默认值（空地 1）。
@@ -131,3 +135,37 @@ func _claim_cell(cell: Vector2i, attacker_uid: int) -> void:
 		players[attacker_uid].cells.append(cell)
 
 	print("claim: %s -> uid=%d" % [cell, attacker_uid])
+
+
+## 校验 owner_uid 是否可以在 origin 处放置 size×size 大小的建筑。
+## 要求：所有格子属于该玩家且当前未被建筑占用。
+func can_place_building(origin: Vector2i, size: int, owner_uid: int) -> bool:
+	for dy in range(size):
+		for dx in range(size):
+			var cell := origin + Vector2i(dx, dy)
+			var td := get_cell_tile_data(cell)
+			if td == null:
+				return false
+			if td.get_custom_data("user") as int != owner_uid:
+				return false
+			if occupied_cells.has(cell):
+				return false
+	return true
+
+
+## 将已实例化的建筑注册到地图（绑定 map 引用、写入 tile_hp 与 occupied_cells）。
+## 调用前需已设置 b.origin_cell 与 b.owner_uid。
+func register_building(b: building) -> void:
+	b.map = self
+	for cell in b.get_occupied_cells():
+		tile_hp[cell] = b.max_hp
+		occupied_cells[cell] = b
+	if not b.destroyed.is_connected(_on_building_destroyed):
+		b.destroyed.connect(_on_building_destroyed)
+
+
+## 建筑被摧毁时，清理其占格记录。
+func _on_building_destroyed(b: building) -> void:
+	for cell in b.get_occupied_cells():
+		occupied_cells.erase(cell)
+		tile_hp.erase(cell)
