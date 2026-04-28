@@ -63,12 +63,19 @@ func _make_item(cfg: Dictionary) -> Button:
 	var scene_path: String = cfg["scene"]
 	var size:       int    = cfg["size"]
 
-	# 鼠标按下时立刻开始拖拽，松手时由 game.gd 完成放置
-	btn.button_down.connect(func() -> void:
+	# 用 gui_input 而非 button_down：鼠标可以拖出按钮再松手而不让按钮状态卡死
+	btn.gui_input.connect(func(ev: InputEvent) -> void:
 		if btn.disabled:
 			return
-		var packed := load(scene_path) as PackedScene
-		_game.start_drag(packed, size, btn)
+		if ev is InputEventMouseButton:
+			var mb := ev as InputEventMouseButton
+			if mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
+				# 立即解除按钮的"按下"状态，避免拖出去后 release 收不到导致状态卡死
+				btn.button_pressed = false
+				btn.release_focus()
+				btn.accept_event()
+				var packed := load(scene_path) as PackedScene
+				_game.start_drag(packed, size, btn)
 	)
 	return btn
 
