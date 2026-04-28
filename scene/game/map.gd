@@ -52,6 +52,12 @@ func _collect_players() -> void:
 			add_child(p)
 			players[uid] = p
 
+			# 为 AI 玩家挂载控制器子节点；本机人类玩家由 game.gd 操作
+			if p.user_type == player_const.USER_TYPE.AI:
+				var ai := ai_controller.new()
+				ai.owner_uid = uid
+				p.add_child(ai)
+
 		players[uid].cells.append(cell)
 
 
