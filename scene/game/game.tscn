@@ -2,11 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://cr4fwj8ckf1m8" path="res://assets/tile/TilesetField.png" id="1_wmy51"]
 [ext_resource type="Script" uid="uid://m5drrjukdpud" path="res://scene/game/map.gd" id="2_pldw2"]
-[ext_resource type="Script" path="res://scene/game/game.gd" id="5_gamegd"]
-[ext_resource type="Script" path="res://scene/building/building_ghost.gd" id="6_ghostgd"]
-[ext_resource type="Script" path="res://scene/ui/building_panel.gd" id="7_panelgd"]
 [ext_resource type="PackedScene" uid="uid://dlfn7ivwk87w8" path="res://scene/building/home.tscn" id="3_pldw2"]
 [ext_resource type="PackedScene" uid="uid://cob20waqrf7sb" path="res://scene/building/chicken.tscn" id="4_82mss"]
+[ext_resource type="Script" uid="uid://du0bfdna5tjas" path="res://scene/game/game.gd" id="5_gamegd"]
+[ext_resource type="Script" uid="uid://dwdcs00ljwrka" path="res://scene/building/building_ghost.gd" id="6_ghostgd"]
+[ext_resource type="Script" uid="uid://docvx4sjvnuhp" path="res://scene/ui/building_panel.gd" id="7_panelgd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_c7s6e"]
 texture = ExtResource("1_wmy51")
@@ -111,7 +111,7 @@ owner_uid = 1
 
 [node name="home2" parent="BuildingContainer" unique_id=1775593468 instance=ExtResource("3_pldw2")]
 position = Vector2(176, 192)
-owner_uid = 1
+owner_uid = 2
 
 [node name="chicken4" parent="BuildingContainer" unique_id=1819992847 instance=ExtResource("4_82mss")]
 position = Vector2(160, 208)

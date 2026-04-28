@@ -44,9 +44,12 @@ signal skill_triggered(b: building)
 # ---------------------------------------------------------------------------
 # 生命周期
 # ---------------------------------------------------------------------------
+func _enter_tree() -> void:
+	add_to_group("building")
+
+
 func _ready() -> void:
 	hp = max_hp
-	add_to_group("building")
 	fix_to_grid()
 	_fit_sprite()
 	call_deferred("_bind_map")

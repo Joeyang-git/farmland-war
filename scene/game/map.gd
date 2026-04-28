@@ -15,7 +15,7 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	_collect_players()
-	_collect_buildings()
+	call_deferred("_collect_buildings")
 
 
 func _process(_delta: float) -> void:
@@ -99,9 +99,18 @@ func is_attackable(cell: Vector2i, attacker_uid: int) -> bool:
 
 
 ## 对目标格造成 1 点伤害；血量归零则将该格划归 attacker_uid。
+## 若目标格上有建筑，则直接伤害建筑；建筑被摧毁时批量夺取其占格。
 func attack_cell(cell: Vector2i, attacker_uid: int) -> void:
 	print("attack_cell: %s -> uid=%d" % [cell, attacker_uid])
 	if not is_attackable(cell, attacker_uid):
+		return
+
+	if occupied_cells.has(cell):
+		var b: building = occupied_cells[cell]
+		var b_cells := b.get_occupied_cells()
+		if b.take_damage(1):
+			for c in b_cells:
+				_claim_cell(c, attacker_uid)
 		return
 
 	var current_hp := get_tile_hp(cell)
