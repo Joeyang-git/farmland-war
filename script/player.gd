@@ -1,4 +1,4 @@
-## 逻辑玩家实体，由 map.gd 在 _collect_players() 中实例化并作为 Map 节点的子节点持有。
+## 逻辑玩家实体，由 map.gd 在 _collect_players() 中实例化并作为 Map（Node2D 容器）的子节点持有。
 ## game.gd 通过 map.players[local_uid] 访问本机玩家；building 通过 map.players[owner_uid] 访问自身归属者。
 class_name player
 extends Node

@@ -1,18 +1,30 @@
-## 地图层：负责地块归属、建筑占格校验与玩家节点生命周期。
+## 地图聚合层：持有地形与归属两层 TileMapLayer，对外提供统一 API。
+##
+## 节点结构（见 game.tscn）：
+##   Game
+##   └── Map (Node2D, 本脚本)        ← group "map_layer"
+##       ├── TerrainLayer    (TileMapLayer) ← 静态地形：草地/废墟/障碍
+##       └── OwnershipLayer  (TileMapLayer) ← 动态归属：HUMAN/AI 标记
 ##
 ## [player] 归属说明：
-##   - 所有 player 实例在 [method _collect_players] 中由本节点 add_child() 持有，
-##     即 player 节点是 Map（TileMapLayer）的直接子节点。
-##   - 外部（game.gd / building.gd）通过 map.players[uid] 访问具体玩家数据。
-extends TileMapLayer
+##   - 所有 player 实例在 [method _collect_players] 中由本节点 add_child() 持有。
+##   - 外部（game.gd / building.gd / ai_controller.gd）通过 map.players[uid] 访问玩家数据。
+##
+## [坐标] 说明：
+##   - 网格 ↔ 像素 的转换转发到 ownership_layer，外部用 map.local_to_map / map.to_local 即可。
+class_name farm_map
+extends Node2D
 
 ## uid(int) -> player；player 节点由本节点持有（见 _collect_players）
 var players: Dictionary[int, player] = {}
 
-## 格子当前血量表；未记录的格子视为满血（空地默认 1）
+## 格子当前血量表；未记录的格子按地形类型给默认耐久（见 _terrain_hp）
 var tile_hp: Dictionary[Vector2i, int] = {}
 ## 格子 → 占用它的建筑；用于放置合法性校验
 var occupied_cells: Dictionary[Vector2i, building] = {}
+
+@onready var terrain_layer:   TileMapLayer = $TerrainLayer
+@onready var ownership_layer: TileMapLayer = $OwnershipLayer
 
 
 func _enter_tree() -> void:
@@ -24,20 +36,57 @@ func _ready() -> void:
 	call_deferred("_collect_buildings")
 
 
-func _process(_delta: float) -> void:
-	pass
+# ---------------------------------------------------------------------------
+# 坐标 / 选格 转发：让外部仍能 map.local_to_map(...)、map.to_local(...)
+# ---------------------------------------------------------------------------
+func local_to_map(local_pos: Vector2) -> Vector2i:
+	return ownership_layer.local_to_map(local_pos)
 
 
-## 扫描 TileSet 自定义层 "user"，为每个不同 uid 实例化一个 Player 节点并记录初始地块。
+func map_to_local(cell: Vector2i) -> Vector2:
+	return ownership_layer.map_to_local(cell)
+
+
+# ---------------------------------------------------------------------------
+# 地形查询 API
+# ---------------------------------------------------------------------------
+## 返回该格的地形类型；TerrainLayer 该格未填则视为 EMPTY。
+func get_terrain(cell: Vector2i) -> terrain_const.TYPE:
+	if terrain_layer == null:
+		return terrain_const.TYPE.EMPTY
+	var td: TileData = terrain_layer.get_cell_tile_data(cell)
+	if td == null:
+		return terrain_const.TYPE.EMPTY
+	return td.get_custom_data("terrain") as terrain_const.TYPE
+
+
+## 该格是否可通行（非障碍）；用于扩张/包围/封锁判定时的可达性。
+func is_passable(cell: Vector2i) -> bool:
+	return get_terrain(cell) != terrain_const.TYPE.OBSTACLE
+
+
+## 该格按地形类型应有的初始耐久；当 tile_hp 未记录时使用。
+func _terrain_hp(cell: Vector2i) -> int:
+	match get_terrain(cell):
+		terrain_const.TYPE.RUIN:
+			return terrain_const.HP_RUIN
+		_:
+			return terrain_const.HP_EMPTY
+
+
+# ---------------------------------------------------------------------------
+# 玩家 / 建筑 收集
+# ---------------------------------------------------------------------------
+## 扫描 OwnershipLayer 自定义层 "user"，为每个不同 uid 实例化一个 Player 节点并记录初始地块。
 func _collect_players() -> void:
 	players.clear()
 
-	if tile_set == null:
-		push_warning("Map: tile_set 为空，无法收集 user 数据。")
+	if ownership_layer == null or ownership_layer.tile_set == null:
+		push_warning("Map: ownership_layer 未就绪，无法收集 user 数据。")
 		return
 
-	for cell: Vector2i in get_used_cells():
-		var td: TileData = get_cell_tile_data(cell)
+	for cell: Vector2i in ownership_layer.get_used_cells():
+		var td: TileData = ownership_layer.get_cell_tile_data(cell)
 		if td == null:
 			continue
 		var uid: int = td.get_custom_data("user") as int
@@ -76,11 +125,14 @@ func _collect_buildings() -> void:
 		b.destroyed.connect(_on_building_destroyed)
 
 
-## 返回格子当前血量；未受击过的格子返回默认值（空地 1）。
+# ---------------------------------------------------------------------------
+# 战斗 / 占领
+# ---------------------------------------------------------------------------
+## 返回格子当前血量；未受击过的格子返回该地形类型默认耐久（空地 1 / 废墟 2）。
 func get_tile_hp(cell: Vector2i) -> int:
 	if tile_hp.has(cell):
 		return tile_hp[cell]
-	return 1
+	return _terrain_hp(cell)
 
 
 ## 返回 attacker_uid 所有地块边界上可攻击的邻接格（去重）。
@@ -102,10 +154,13 @@ func get_border_targets(attacker_uid: int) -> Array[Vector2i]:
 	return result
 
 
-## 该格是否可被 attacker_uid 攻击（存在于地图中、且不属于己方）。
+## 该格是否可被 attacker_uid 攻击。
+## 条件：存在于地图中、不属于己方、且非障碍地形。
 func is_attackable(cell: Vector2i, attacker_uid: int) -> bool:
-	var td: TileData = get_cell_tile_data(cell)
+	var td: TileData = ownership_layer.get_cell_tile_data(cell)
 	if td == null:
+		return false
+	if get_terrain(cell) == terrain_const.TYPE.OBSTACLE:
 		return false
 	var cell_owner: int = td.get_custom_data("user") as int
 	return cell_owner != attacker_uid
@@ -138,7 +193,7 @@ func attack_cell(cell: Vector2i, attacker_uid: int) -> void:
 
 ## 将格子归属改为 attacker_uid，并更新双方 player.cells。
 func _claim_cell(cell: Vector2i, attacker_uid: int) -> void:
-	var td: TileData = get_cell_tile_data(cell)
+	var td: TileData = ownership_layer.get_cell_tile_data(cell)
 	if td == null:
 		return
 
@@ -150,7 +205,7 @@ func _claim_cell(cell: Vector2i, attacker_uid: int) -> void:
 
 	# 用对应玩家的瓦片覆盖（atlas 里 custom_data "user" 随瓦片自动更新）
 	var atlas_coords := player_const.TILE_HUMAN if attacker_uid == player_const.USER_TYPE.HUMAN else player_const.TILE_AI
-	set_cell(cell, 0, atlas_coords)
+	ownership_layer.set_cell(cell, 0, atlas_coords)
 
 	# 写入新归属者
 	if players.has(attacker_uid):
@@ -159,18 +214,23 @@ func _claim_cell(cell: Vector2i, attacker_uid: int) -> void:
 	print("claim: %s -> uid=%d" % [cell, attacker_uid])
 
 
+# ---------------------------------------------------------------------------
+# 建筑放置
+# ---------------------------------------------------------------------------
 ## 校验 owner_uid 是否可以在 origin 处放置 size×size 大小的建筑。
-## 要求：所有格子属于该玩家且当前未被建筑占用。
+## 要求：所有格子属于该玩家、未被建筑占用、且非障碍地形（PRD 3.3.2）。
 func can_place_building(origin: Vector2i, size: int, owner_uid: int) -> bool:
 	for dy in range(size):
 		for dx in range(size):
 			var cell := origin + Vector2i(dx, dy)
-			var td := get_cell_tile_data(cell)
+			var td := ownership_layer.get_cell_tile_data(cell)
 			if td == null:
 				return false
 			if td.get_custom_data("user") as int != owner_uid:
 				return false
 			if occupied_cells.has(cell):
+				return false
+			if get_terrain(cell) == terrain_const.TYPE.OBSTACLE:
 				return false
 	return true
 

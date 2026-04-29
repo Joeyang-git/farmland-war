@@ -3,7 +3,7 @@
 class_name game
 extends Node2D
 
-@onready var map:                TileMapLayer = $Map
+@onready var map:                farm_map     = $Map
 @onready var building_container: Node2D       = $BuildingContainer
 @onready var ghost:              Node2D       = $BuildingGhost
 

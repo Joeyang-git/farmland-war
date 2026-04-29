@@ -25,7 +25,7 @@ var origin_cell: Vector2i = Vector2i.ZERO
 ## 当前耐久
 var hp: int = max_hp
 ## 地图引用，_ready 后自动从 "map_layer" 组获取
-var map: TileMapLayer = null
+var map: farm_map = null
 
 # ---------------------------------------------------------------------------
 # 运行时状态（不暴露给编辑器）
@@ -58,7 +58,7 @@ func _ready() -> void:
 
 
 func _bind_map() -> void:
-	map = get_tree().get_first_node_in_group("map_layer") as TileMapLayer
+	map = get_tree().get_first_node_in_group("map_layer") as farm_map
 
 
 func _process(delta: float) -> void:

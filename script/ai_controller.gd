@@ -17,7 +17,7 @@ const TARGET_DUCK_COUNT: int = 3
 ## 控制的玩家 uid（与父 player 节点的 uid 一致）
 var owner_uid: int = 0
 
-var _map: TileMapLayer = null
+var _map: farm_map = null
 var _building_container: Node2D = null
 var _timer: float = 0.0
 
@@ -26,7 +26,7 @@ var _duck_scene:    PackedScene = preload("res://scene/building/duck.tscn")
 
 
 func _ready() -> void:
-	_map = get_tree().get_first_node_in_group("map_layer") as TileMapLayer
+	_map = get_tree().get_first_node_in_group("map_layer") as farm_map
 	var game_root := get_tree().get_first_node_in_group("game_root")
 	if game_root != null:
 		_building_container = game_root.get_node_or_null("BuildingContainer") as Node2D
