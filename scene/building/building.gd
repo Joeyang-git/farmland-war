@@ -35,6 +35,11 @@ var is_blocked: bool = false
 ## CD 计时器（秒）；达到 skill_cd 时触发技能
 var _cd_timer: float = 0.0
 
+## 被干扰剩余时间（秒）；>0 时 CD 推进按 [member _DISTURB_CD_MULT] 倍率减速（PRD 3.4.1 鹅·干扰）
+var _disturb_remaining: float = 0.0
+## 干扰下 CD 累积速率的倒数：1.5 表示 CD 变长 50%（实际推进 = delta / 1.5）
+const _DISTURB_CD_MULT: float = 1.5
+
 # ---------------------------------------------------------------------------
 # 信号
 # ---------------------------------------------------------------------------
@@ -64,10 +69,27 @@ func _bind_map() -> void:
 func _process(delta: float) -> void:
 	if is_blocked:
 		return
-	_cd_timer += delta
+
+	var inc: float = delta
+	if _disturb_remaining > 0.0:
+		_disturb_remaining = maxf(0.0, _disturb_remaining - delta)
+		inc = delta / _DISTURB_CD_MULT
+
+	_cd_timer += inc
 	if _cd_timer >= skill_cd:
 		_cd_timer = 0.0
 		_on_skill_ready()
+
+
+# ---------------------------------------------------------------------------
+# 状态效果
+# ---------------------------------------------------------------------------
+## 施加 / 刷新干扰效果：在 [param duration] 秒内 CD 推进减速（被鹅 _use_skill 调用）。
+## 多次叠加取最长剩余时间，不累加。
+func apply_disturb(duration: float) -> void:
+	if duration <= 0.0:
+		return
+	_disturb_remaining = maxf(_disturb_remaining, duration)
 
 
 # ---------------------------------------------------------------------------

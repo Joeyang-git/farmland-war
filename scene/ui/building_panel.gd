@@ -27,7 +27,31 @@ var BUILDINGS: Array[Dictionary] = [
 		"size":    1,
 		"cost":    20,  ## building_const.COST_SMALL
 		"texture": "res://assets/imgs/TilesetHouse.png",
-		"region":	Rect2(480, 272, 16, 16),
+		"region":  Rect2(480, 272, 16, 16),
+	},
+	{
+		"label":   "Goose",
+		"scene":   "res://scene/building/goose.tscn",
+		"size":    1,
+		"cost":    20,  ## building_const.COST_SMALL
+		"texture": "res://assets/imgs/TilesetHouse.png",
+		"region":  Rect2(128, 48, 16, 16),
+	},
+	{
+		"label":   "Bull",
+		"scene":   "res://scene/building/bull.tscn",
+		"size":    2,
+		"cost":    60,  ## building_const.COST_MEDIUM
+		"texture": "res://assets/imgs/TilesetHouse.png",
+		"region":  Rect2(256, 48, 48, 48),
+	},
+	{
+		"label":   "Pig",
+		"scene":   "res://scene/building/pig.tscn",
+		"size":    2,
+		"cost":    60,  ## building_const.COST_MEDIUM
+		"texture": "res://assets/imgs/TilesetHouse.png",
+		"region":  Rect2(304, 304, 48, 48),
 	},
 ]
 
@@ -64,34 +88,65 @@ func _build_ui() -> void:
 	_gold_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.0))
 	add_child(_gold_label)
 
-	# 建筑按钮面板
+	# 建筑按钮面板：贴底部、随内容向上扩展高度（按钮多了自动换行）
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	panel.offset_top    = -52.0
+	panel.offset_top    = 0.0
 	panel.offset_bottom = 0.0
+	panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	add_child(panel)
 
-	var hbox := HBoxContainer.new()
-	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	hbox.add_theme_constant_override("separation", 6)
-	panel.add_child(hbox)
+	var flow := HFlowContainer.new()
+	flow.alignment = FlowContainer.ALIGNMENT_CENTER
+	flow.add_theme_constant_override("h_separation", 6)
+	flow.add_theme_constant_override("v_separation", 6)
+	panel.add_child(flow)
 
 	for cfg: Dictionary in BUILDINGS:
 		var btn := _make_item(cfg)
-		hbox.add_child(btn)
+		flow.add_child(btn)
 		_buttons.append({"btn": btn, "cost": cfg["cost"] as int})
 
 
+## 单个建筑按钮：上方贴图标，下方挂「名称 价格」标签；尺寸紧凑可换行
 func _make_item(cfg: Dictionary) -> Button:
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(44, 44)
+	btn.custom_minimum_size = Vector2(36, 44)
 	btn.tooltip_text        = "%s（%d金）" % [cfg["label"], cfg["cost"]]
-	btn.expand_icon         = true
 
-	var atlas    := AtlasTexture.new()
+	# 内容容器：填满按钮、不挡输入
+	var vbox := VBoxContainer.new()
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vbox.offset_left   =  2
+	vbox.offset_top    =  2
+	vbox.offset_right  = -2
+	vbox.offset_bottom = -2
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 1)
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(vbox)
+
+	# 图标
+	var atlas := AtlasTexture.new()
 	atlas.atlas  = load(cfg["texture"]) as Texture2D
 	atlas.region = cfg["region"] as Rect2
-	btn.icon     = atlas
+
+	var icon_rect := TextureRect.new()
+	icon_rect.texture            = atlas
+	icon_rect.expand_mode        = TextureRect.EXPAND_IGNORE_SIZE
+	icon_rect.stretch_mode       = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon_rect.custom_minimum_size = Vector2(22, 22)
+	icon_rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	icon_rect.mouse_filter       = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(icon_rect)
+
+	# 名称 + 价格（一行展示，字号小）
+	var lbl := Label.new()
+	lbl.text = "%s %d" % [cfg["label"], cfg["cost"]]
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_size_override("font_size", 9)
+	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(lbl)
 
 	var scene_path: String = cfg["scene"]
 	var size:       int    = cfg["size"]
@@ -126,6 +181,8 @@ func _refresh_gold_ui() -> void:
 		var btn := entry["btn"] as Button
 		var cost := entry["cost"] as int
 		btn.disabled = (cost > 0 and gold < cost)
+		# modulate 会向子节点传递，禁用时图标和文字一起变暗
+		btn.modulate.a = 0.5 if btn.disabled else 1.0
 
 
 func _on_building_placed(_item: Node) -> void:

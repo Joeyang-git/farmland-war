@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b2d0gxcf68eb4"]
+
+[ext_resource type="PackedScene" uid="uid://bn4ynvkak6ovj" path="res://scene/building/building.tscn" id="1_j3sk7"]
+[ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="2_0bfld"]
+[ext_resource type="Script" path="res://scene/building/goose.gd" id="3_goose"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uhn6u"]
+atlas = ExtResource("2_0bfld")
+region = Rect2(128, 48, 16, 16)
+
+[node name="goose" unique_id=970460913 instance=ExtResource("1_j3sk7")]
+script = ExtResource("3_goose")
+
+[node name="Sprite2D" parent="." index="0" unique_id=583592963]
+texture = SubResource("AtlasTexture_uhn6u")

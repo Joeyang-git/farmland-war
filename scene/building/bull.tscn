@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c4dlovo242105"]
+
+[ext_resource type="PackedScene" uid="uid://bn4ynvkak6ovj" path="res://scene/building/building.tscn" id="1_85vty"]
+[ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="2_g2pcm"]
+[ext_resource type="Script" path="res://scene/building/bull.gd" id="3_bull"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ey5w"]
+atlas = ExtResource("2_g2pcm")
+region = Rect2(256, 48, 48, 48)
+
+[node name="bull" unique_id=970460913 instance=ExtResource("1_85vty")]
+script = ExtResource("3_bull")
+size = 2
+
+[node name="Sprite2D" parent="." index="0" unique_id=583592963]
+texture = SubResource("AtlasTexture_4ey5w")

@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dgdxn44x8upjr"]
+
+[ext_resource type="PackedScene" uid="uid://bn4ynvkak6ovj" path="res://scene/building/building.tscn" id="1_rv4ua"]
+[ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="2_r2hyi"]
+[ext_resource type="Script" path="res://scene/building/pig.gd" id="3_pig"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_abgp3"]
+atlas = ExtResource("2_r2hyi")
+region = Rect2(304, 304, 48, 48)
+
+[node name="pig" unique_id=970460913 instance=ExtResource("1_rv4ua")]
+script = ExtResource("3_pig")
+size = 2
+
+[node name="Sprite2D" parent="." index="0" unique_id=583592963]
+texture = SubResource("AtlasTexture_abgp3")
