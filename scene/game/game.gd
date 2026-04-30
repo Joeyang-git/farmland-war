@@ -6,6 +6,7 @@ extends Node2D
 @onready var map:                farm_map     = $Map
 @onready var building_container: Node2D       = $BuildingContainer
 @onready var ghost:              Node2D       = $BuildingGhost
+@onready var _bgm:               AudioStreamPlayer = $BGM
 
 ## 本机玩家 uid（单机固定为 1）
 var local_uid: int = player_const.LOCAL_PEER_ID
@@ -23,6 +24,15 @@ var _drag_source: Node = null
 
 func _enter_tree() -> void:
 	add_to_group("game_root")
+
+
+func _ready() -> void:
+	# 导入的 OGG 默认 loop=false，运行时打开循环并播放 BGM
+	if _bgm != null and _bgm.stream != null:
+		var st: AudioStream = _bgm.stream
+		if st is AudioStreamOggVorbis:
+			(st as AudioStreamOggVorbis).loop = true
+		_bgm.play()
 
 
 func _input(event: InputEvent) -> void:

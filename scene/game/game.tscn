@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://du0bfdna5tjas" path="res://scene/game/game.gd" id="5_gamegd"]
 [ext_resource type="Script" uid="uid://dwdcs00ljwrka" path="res://scene/building/building_ghost.gd" id="6_ghostgd"]
 [ext_resource type="Script" uid="uid://docvx4sjvnuhp" path="res://scene/ui/building_panel.gd" id="7_panelgd"]
+[ext_resource type="AudioStream" uid="uid://dulg4kshjfxv0" path="res://assets/audio/4 - Village.ogg" id="8_bgm"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7d2hf"]
 texture = ExtResource("3_cirq1")
@@ -215,3 +216,7 @@ script = ExtResource("6_ghostgd")
 
 [node name="UILayer" type="CanvasLayer" parent="." unique_id=524203610]
 script = ExtResource("7_panelgd")
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_bgm")
+volume_db = -8.0
