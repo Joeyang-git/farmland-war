@@ -155,14 +155,15 @@ func get_border_targets(attacker_uid: int) -> Array[Vector2i]:
 
 
 ## 该格是否可被 attacker_uid 攻击。
-## 条件：存在于地图中、不属于己方、且非障碍地形。
+## 条件：存在于地图中（TerrainLayer 有格）、不属于己方、且非障碍地形。
+## 无主地（OwnershipLayer 无瓦片）视为 user=0，任何玩家均可攻击。
 func is_attackable(cell: Vector2i, attacker_uid: int) -> bool:
-	var td: TileData = ownership_layer.get_cell_tile_data(cell)
-	if td == null:
+	if terrain_layer.get_cell_tile_data(cell) == null:
 		return false
 	if get_terrain(cell) == terrain_const.TYPE.OBSTACLE:
 		return false
-	var cell_owner: int = td.get_custom_data("user") as int
+	var td: TileData = ownership_layer.get_cell_tile_data(cell)
+	var cell_owner: int = 0 if td == null else td.get_custom_data("user") as int
 	return cell_owner != attacker_uid
 
 
@@ -193,11 +194,11 @@ func attack_cell(cell: Vector2i, attacker_uid: int) -> void:
 
 ## 将格子归属改为 attacker_uid，并更新双方 player.cells。
 func _claim_cell(cell: Vector2i, attacker_uid: int) -> void:
-	var td: TileData = ownership_layer.get_cell_tile_data(cell)
-	if td == null:
+	if terrain_layer.get_cell_tile_data(cell) == null:
 		return
 
-	var prev_owner: int = td.get_custom_data("user") as int
+	var td: TileData = ownership_layer.get_cell_tile_data(cell)
+	var prev_owner: int = 0 if td == null else td.get_custom_data("user") as int
 
 	# 从原归属者移除
 	if prev_owner != 0 and players.has(prev_owner):

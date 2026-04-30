@@ -10,7 +10,7 @@ class_name ai_controller
 extends Node
 
 ## 决策周期（秒）
-const DECISION_INTERVAL: float = 5.0
+const DECISION_INTERVAL: float = 3.0
 ## AI 想要拥有的鸭数量（产钱建筑配额）
 const TARGET_DUCK_COUNT: int = 3
 
