@@ -2,11 +2,61 @@
 
 [ext_resource type="PackedScene" uid="uid://bn4ynvkak6ovj" path="res://scene/building/building.tscn" id="1_85vty"]
 [ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="2_g2pcm"]
-[ext_resource type="Script" path="res://scene/building/bull.gd" id="3_bull"]
+[ext_resource type="Script" uid="uid://kdjjl5iulkr3" path="res://scene/building/bull.gd" id="3_bull"]
+[ext_resource type="Script" uid="uid://bmelukfb6d5fx" path="res://scene/effects/building_pet.gd" id="4_pet"]
+[ext_resource type="Texture2D" uid="uid://cq03qixcrvww7" path="res://assets/imgs/Free Cow Sprites.png" id="5_cow"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4ey5w"]
 atlas = ExtResource("2_g2pcm")
 region = Rect2(256, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="CowIdle0"]
+atlas = ExtResource("5_cow")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="CowIdle1"]
+atlas = ExtResource("5_cow")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="CowWalk0"]
+atlas = ExtResource("5_cow")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="CowWalk1"]
+atlas = ExtResource("5_cow")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="CowWalk2"]
+atlas = ExtResource("5_cow")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="BullPetFrames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("CowIdle0")
+}, {
+"duration": 1.0,
+"texture": SubResource("CowIdle1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("CowWalk0")
+}, {
+"duration": 1.0,
+"texture": SubResource("CowWalk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("CowWalk2")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 6.0
+}]
 
 [node name="bull" unique_id=970460913 instance=ExtResource("1_85vty")]
 script = ExtResource("3_bull")
@@ -14,3 +64,17 @@ size = 2
 
 [node name="Sprite2D" parent="." index="0" unique_id=583592963]
 texture = SubResource("AtlasTexture_4ey5w")
+
+[node name="BullPet" type="Node2D" parent="." index="1" unique_id=1074879513]
+z_index = 1
+position = Vector2(16, 16)
+script = ExtResource("4_pet")
+move_duration = 0.6
+idle_min = 1.0
+idle_max = 2.5
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="BullPet" index="0" unique_id=560619918]
+sprite_frames = SubResource("BullPetFrames")
+animation = &"idle"
+autoplay = "idle"
+centered = true

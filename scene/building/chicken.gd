@@ -1,3 +1,5 @@
+## 鸡屋：自动攻击建筑·啄击（PRD 3.4.1 低级）。
+## 宠物小鸡作为静态子节点 ChickenPet 直接写在 chicken.tscn 中，鸡屋被 queue_free 时随父节点清理。
 class_name chicken
 extends building
 

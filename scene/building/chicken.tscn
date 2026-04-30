@@ -3,15 +3,82 @@
 [ext_resource type="PackedScene" uid="uid://bn4ynvkak6ovj" path="res://scene/building/building.tscn" id="1_wupav"]
 [ext_resource type="Texture2D" uid="uid://ci4myym2y6b2t" path="res://assets/imgs/TilesetHouse.png" id="2_j7m32"]
 [ext_resource type="Script" uid="uid://bbo28qsluf0ls" path="res://scene/building/chicken.gd" id="2_yidxt"]
+[ext_resource type="Script" uid="uid://bmelukfb6d5fx" path="res://scene/effects/building_pet.gd" id="3_pet"]
+[ext_resource type="Texture2D" uid="uid://b1uyclt2w44jo" path="res://assets/imgs/Free Chicken Sprites.png" id="4_chick"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yidxt"]
 atlas = ExtResource("2_j7m32")
 region = Rect2(464, 272, 16, 16)
 
+[sub_resource type="AtlasTexture" id="ChickIdle0"]
+atlas = ExtResource("4_chick")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="ChickIdle1"]
+atlas = ExtResource("4_chick")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="ChickWalk0"]
+atlas = ExtResource("4_chick")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="ChickWalk1"]
+atlas = ExtResource("4_chick")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="ChickWalk2"]
+atlas = ExtResource("4_chick")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="ChickWalk3"]
+atlas = ExtResource("4_chick")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="SpriteFrames" id="ChickenPetFrames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("ChickIdle0")
+}, {
+"duration": 1.0,
+"texture": SubResource("ChickIdle1")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("ChickWalk0")
+}, {
+"duration": 1.0,
+"texture": SubResource("ChickWalk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("ChickWalk2")
+}, {
+"duration": 1.0,
+"texture": SubResource("ChickWalk3")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8.0
+}]
+
 [node name="chicken" unique_id=970460913 instance=ExtResource("1_wupav")]
 script = ExtResource("2_yidxt")
 building_name = "chicken"
-skill_type = 1
 
 [node name="Sprite2D" parent="." index="0" unique_id=583592963]
 texture = SubResource("AtlasTexture_yidxt")
+
+[node name="ChickenPet" type="Node2D" parent="." index="1" unique_id=66365516]
+z_index = 1
+position = Vector2(8, 8)
+script = ExtResource("3_pet")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ChickenPet" index="0" unique_id=1380586375]
+sprite_frames = SubResource("ChickenPetFrames")
+animation = &"idle"
+autoplay = "idle"
+centered = true
