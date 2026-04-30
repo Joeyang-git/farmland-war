@@ -109,6 +109,36 @@ func _use_skill() -> void:
 
 
 # ---------------------------------------------------------------------------
+# 视觉反馈
+# ---------------------------------------------------------------------------
+## coin_popup 用 load(Script) 路径而非 class_name，避免 Cursor LSP 对新增 class_name 索引延迟报错
+const _COIN_POPUP_SCRIPT_PATH: String = "res://scene/effects/coin_popup.gd"
+
+
+## 在建筑顶部弹出「+amount 金币」飘字（被动产钱建筑在 _use_skill 中调用）。
+## 飘字挂在 [member get_parent]（通常是 BuildingContainer）下，建筑被摧毁也不影响动画播放完。
+func _spawn_coin_popup(amount: int) -> void:
+	if amount <= 0:
+		return
+	var parent := get_parent()
+	if parent == null:
+		return
+
+	var script := load(_COIN_POPUP_SCRIPT_PATH) as Script
+	if script == null:
+		return
+	var pop := Node2D.new()
+	pop.set_script(script)
+	pop.call("setup", amount)
+
+	var s: int = size as int
+	var center_x: float = position.x + (s * building_const.TILE_SIZE) * 0.5
+	var top_y:    float = position.y - 4.0
+	pop.position = Vector2(center_x, top_y)
+	parent.add_child(pop)
+
+
+# ---------------------------------------------------------------------------
 # 受击
 # ---------------------------------------------------------------------------
 ## 对建筑造成固定伤害；返回建筑是否已被摧毁。

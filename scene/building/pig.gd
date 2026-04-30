@@ -21,7 +21,7 @@ func _process(delta: float) -> void:
 	super(delta)
 
 
-## 超高产：每周期向归属玩家的 gold 累加大额金币
+## 超高产：每周期向归属玩家的 gold 累加大额金币，并在建筑上弹出 +N 金币飘字
 func _use_skill() -> void:
 	if map == null:
 		return
@@ -29,3 +29,4 @@ func _use_skill() -> void:
 	if p == null:
 		return
 	p.gold += GOLD_PER_TICK
+	_spawn_coin_popup(GOLD_PER_TICK)

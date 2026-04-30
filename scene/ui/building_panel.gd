@@ -76,17 +76,32 @@ func _process(_delta: float) -> void:
 
 
 func _build_ui() -> void:
-	# 金币显示标签
+	# 金币显示：[图标] [数字]，右上角
+	var gold_row := HBoxContainer.new()
+	gold_row.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	gold_row.offset_left   = -120.0
+	gold_row.offset_top    =   8.0
+	gold_row.offset_right  =  -8.0
+	gold_row.offset_bottom =  32.0
+	gold_row.alignment = BoxContainer.ALIGNMENT_END
+	gold_row.add_theme_constant_override("separation", 4)
+	add_child(gold_row)
+
+	var coin_icon := TextureRect.new()
+	coin_icon.texture                = load("res://assets/imgs/GoldCoin.png")
+	coin_icon.expand_mode            = TextureRect.EXPAND_IGNORE_SIZE
+	coin_icon.stretch_mode           = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	coin_icon.custom_minimum_size    = Vector2(20, 20)
+	coin_icon.size_flags_vertical    = Control.SIZE_SHRINK_CENTER
+	gold_row.add_child(coin_icon)
+
 	_gold_label = Label.new()
-	_gold_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_gold_label.offset_left   = -120.0
-	_gold_label.offset_top    =   8.0
-	_gold_label.offset_right  =  -8.0
-	_gold_label.offset_bottom =  28.0
+	_gold_label.text = "---"
 	_gold_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_gold_label.text = "金币: ---"
 	_gold_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.0))
-	add_child(_gold_label)
+	_gold_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.85))
+	_gold_label.add_theme_constant_override("outline_size", 2)
+	gold_row.add_child(_gold_label)
 
 	# 建筑按钮面板：贴底部、随内容向上扩展高度（按钮多了自动换行）
 	var panel := PanelContainer.new()
@@ -176,7 +191,7 @@ func _refresh_gold_ui() -> void:
 	if p == null:
 		return
 	var gold: int = p.gold
-	_gold_label.text = "金币: %d" % gold
+	_gold_label.text = "%d" % gold
 	for entry: Dictionary in _buttons:
 		var btn := entry["btn"] as Button
 		var cost := entry["cost"] as int
